@@ -2,6 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const path = require("path")
 
 const app = express();
 app.use(cors());
@@ -16,9 +17,7 @@ const io = new Server(server, {
   }
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/../public/index.html");
-});
+app.use(express.static("../build"));
 
 const raisedHands = [];
 
