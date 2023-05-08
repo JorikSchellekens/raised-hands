@@ -21,6 +21,10 @@ h1 {
   margin-bottom: 20px;
 }
 
+.banner {
+  color: #f72585;
+}
+
 input {
   padding: 10px;
   font-size: 1rem;

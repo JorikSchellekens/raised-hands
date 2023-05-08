@@ -30,6 +30,11 @@ function App() {
     socketRef.current.emit("resolveHand", index);
   };
 
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
+
   return (
     <div className="App">
       <h1>Raised Hands Queue</h1>
@@ -43,11 +48,12 @@ function App() {
       <ul>
         {raisedHands.map((hand, index) => (
           <li key={index}>
-            {hand.name} - {hand.timestamp}
+            {hand.name} - {formatTimestamp(hand.timestamp)}
             <button onClick={() => resolveHand(index)}>Resolve</button>
           </li>
         ))}
       </ul>
+      <div className="banner">Made for Nethermind MANAGERS</div>
     </div>
   );
 }
