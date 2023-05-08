@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import socketIOClient from "socket.io-client";
+
+const ENDPOINT = "http://localhost:3001";
 
 function App() {
+  const [raisedHands, setRaisedHands] = useState([]);
+  const [name, setName] = useState("");
+  const socketRef = React.useRef();
+
+  useEffect(() => {
+    socketRef.current = socketIOClient(ENDPOINT);
+
+    socketRef.current.on("raisedHands", (data) => {
+      setRaisedHands(data);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+  const raiseHand = () => {
+    const timestamp = new Date().toISOString();
+    socketRef.current.emit("raiseHand", { name, timestamp });
+  };
+
+  const resolveHand = (index) => {
+    socketRef.current.emit("resolveHand", index);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Raised Hands Queue</h1>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Your name"
+      />
+      <button onClick={raiseHand}>Raise Hand</button>
+      <ul>
+        {raisedHands.map((hand, index) => (
+          <li key={index}>
+            {hand.name} - {hand.timestamp}
+            <button onClick={() => resolveHand(index)}>Resolve</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
 export default App;
+
